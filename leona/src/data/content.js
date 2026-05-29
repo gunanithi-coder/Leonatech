@@ -1,0 +1,186 @@
+export const SERVICES = [
+  { 
+    id:1, 
+    num:"01", 
+    icon:"⛰", 
+    title:"Topographical Survey", 
+    sub:"Urban Mapping & Planning",
+    category:"Urban Planning",
+    desc:"High-accuracy drone surveys delivering detailed topographic maps, LULC classification, 3D mesh models, DEM, DSM, and watershed analysis for urban infrastructure planning.",
+    process:["UAV Flight Planning","Image Acquisition","Point Cloud Processing","GIS Feature Extraction"],
+    deliverables:["Topographical Maps","LULC Maps","3D Mesh Model","DEM / DSM","Watershed Analysis","Mobile App Output"] 
+  },
+  { 
+    id:2, 
+    num:"02",
+    icon:"🏢", 
+    title:"3D Reality Model", 
+    sub:"Digital Twin & Property Tax",
+    category:"Urban Planning",
+    desc:"Photorealistic 3D digital twins enabling property tax evasion detection, city planning simulation and infrastructure asset management at scale.",
+    process:["Oblique Image Capture","Dense Point Cloud","3D Mesh Generation","Database Integration"],
+    deliverables:["3D City Model","Property Database","Tax Evasion Reports","Digital Twin Platform"]
+  },
+  { 
+    id:3, 
+    num:"03", 
+    icon:"📍", 
+    title:"Door to Door Survey", 
+    sub:"Geo-Database Creation",
+    category:"Urban Planning",
+    desc:"Comprehensive field surveys integrated with drone mapping to create precise geo-databases covering utilities, building assets, and municipal planning datasets.",
+    process:["Field Data Collection","Drone Ortho-mapping","Data Integration","Database Creation"],
+    deliverables:["Geo-Database","Utility Network Maps","3D Mesh Model","DSM Outputs","Mobile Field App"] 
+  },
+  { 
+    id:4, 
+    num:"04", 
+    icon:"🔩", 
+    title:"Underground Utility Mapping", 
+    sub:"Sewerage & Drainage",
+    category:"Infrastructure",
+    desc:"GPR-based mapping of underground sewerage, drainage and utility networks overlaid on drone ortho-imagery for critical infrastructure planning and maintenance.",
+    process:["GPR Acquisition","Signal Processing","Feature Identification","GIS Integration"],
+    deliverables:["Utility Network Maps","Pipeline GIS Layers","Asset Register","Infrastructure Reports"] },
+  { 
+    id:5, 
+    num:"05", 
+    icon:"💧", 
+    title:"Water Body Mapping", 
+    sub:"Restoration Projects",
+    category:"Water & Environment",
+    desc:"Comprehensive lake, reservoir, and canal mapping for ecological restoration capturing bed levels, bund levels, inlet/outlet structures, and full hydrological data.",
+    process:["UAV & Bathymetric Survey","Ortho-mosaic Generation","3D Point Cloud","Hydrological Analysis"],
+    deliverables:["Lake Topo Map","Canal Cross-sections","DEM","Spot Levels","Watershed Map","3D Dense Point Cloud"] },
+  { 
+    id:6, 
+    num:"06", 
+    icon:"🌊", 
+    title:"Flood Mapping", 
+    sub:"Watershed Management",
+    category:"Water & Environment",
+    desc:"High-resolution flood zone mapping and watershed modelling using drone DEM data for disaster risk management, urban drainage design, and climate resilience planning.",
+    process:["High-res Drone Survey","Image Alignment","Elevation Modelling","Flood Simulation"],
+    deliverables:["Flood Zone Maps","Watershed Models","DEM Products","Contour Maps","Risk Reports"] },
+  { 
+    id:7, 
+    num:"07", 
+    icon:"⛏", 
+    title:"Volumetric Analysis", 
+    sub:"Mines & Stockpiles",
+    category:"Mining & Volumetric",
+    desc:"Rapid, accurate volumetric estimation of mining operations, quarries and stockpiles using drone photogrammetry with GCP control for compliance, billing, and planning.",
+    process:["Drone Survey","GCP Placement","Point Cloud Processing","Volume Calculation"],
+    deliverables:["Volume Reports","Contour Maps","Cross-section Profiles","Topographical Maps"] },
+  { 
+    id:8, 
+    num:"08", 
+    icon:"🗺", 
+    title:"Cadastral Georeferencing", 
+    sub:"Infrastructure & Roadways",
+    category:"Infrastructure",
+    desc:"Digitizing and precision-georeferencing of FMB/cadastral maps overlaid on drone ortho-imagery for accurate land parcel identification and right-of-way surveys.",
+    process:["Historical Map Collection","Drone Ortho-mosaic","Georeferencing","Cadastral Digitization"],
+    deliverables:["FMB Alignment Maps","Cadastral GIS Layers","DEM","LiDAR DSM"] },
+  { 
+    id:9, 
+    num:"09", 
+    icon:"🎥", 
+    title:"Project Monitoring", 
+    sub:"Roads & Railways",
+    category:"Monitoring",
+    desc:"Scheduled drone-based progress monitoring and 4K videography of road and railway infrastructure projects for documentation, change detection, and quality reporting.",
+    process:["Scheduled Flight Ops","Video & Image Capture","Change Detection","Report Delivery"],
+    deliverables:["Progress Videos","Orthomosaics","Change Detection Maps","Monitoring Reports"] },
+];
+
+export const SERVICE_TABS = [
+  "All Services","Urban Planning","Water & Environment","Infrastructure","Mining & Volumetric","Monitoring"
+];
+
+export const PROJECTS = [
+  { 
+    id:1, featured:true,  
+    cat:"Urban Planning",      
+    icon:"⛰",
+    title:"Municipal Topographic Survey",      
+    loc:"South India",           
+    desc:"Large-scale urban topographic survey covering 450 sq.km with LiDAR and RGB drone data for city master planning and infrastructure development.", 
+    tag:"Topographical Survey",   
+    stats:[{l:"Area",v:"450 sq.km"},{l:"Duration",v:"6 months"},{l:"Accuracy",v:"±5 cm"}] },
+  { 
+    id:2, featured:false, 
+    cat:"Water & Environment", 
+    icon:"💧", title:"Lake Restoration Mapping",          
+    loc:"Tamil Nadu",             
+    desc:"Comprehensive mapping of 12 lakes including bathymetric survey, DEM generation and watershed analysis for ecological restoration projects.",        
+    tag:"Water Body Mapping",     
+    stats:[{l:"Lakes",v:"12"},{l:"Area",v:"340 ha"},{l:"Output",v:"Full DEM"}] },
+  { 
+    id:3, featured:false, 
+    cat:"Infrastructure",      
+    icon:"🛣", 
+    title:"National Highway Corridor Survey", 
+    loc:"Multi-State, India",    
+    desc:"450 km road corridor survey using Mobile LiDAR and drone photogrammetry for infrastructure expansion and FMB alignment.",                          
+    tag:"Road Development",       
+    stats:[{l:"Length",v:"450 km"},{l:"Method",v:"MLS + UAV"},{l:"GCP Points",v:"320+"}] },
+  { 
+    id:4, featured:false, 
+    cat:"Mining & Volumetric",
+    icon:"⛏", 
+    title:"Coal Mine Volumetric Analysis",    
+    loc:"Jharkhand",            
+    desc:"Monthly volumetric monitoring of active coal mining operations across 3 sites with automated change detection and compliance reporting.",           
+    tag:"Volumetric Analysis",   
+    stats:[{l:"Sites",v:"3"},{l:"Frequency",v:"Monthly"},{l:"Accuracy",v:"±0.3%"}] },
+  { 
+    id:5, featured:false,
+    cat:"Water & Environment", 
+    icon:"🌊",
+    title:"Urban Flood Risk Mapping",         
+    loc:"Chennai Metro Area",   
+    desc:"High-resolution flood mapping and watershed modelling for 600 sq.km urban area, informing drainage design and disaster preparedness.",              
+    tag:"Flood Mapping",          
+    stats:[{l:"Area",v:"600 sq.km"},{l:"Resolution",v:"5 cm"},{l:"Output",v:"DEM + Zones"}] },
+  { 
+    id:6, featured:false, 
+    cat:"Urban Planning",      
+    icon:"📍", title:"Door to Door Property Survey",     
+    loc:"Municipal Corporation", 
+    desc:"Comprehensive survey of 185,000+ properties with geo-database creation for property tax rationalisation and urban asset management.",               
+    tag:"Door to Door Survey",   
+    stats:[{l:"Properties",v:"185,000+"},{l:"GIS Database",v:"Full"},{l:"Mobile App",v:"Deployed"}] },
+  { 
+    id:7, featured:false, 
+    cat:"Water & Environment", 
+    icon:"🌊", 
+    title:"Canal Network Survey",             
+    loc:"Karnataka",             
+    desc:"Topographical mapping, cross-sections and longitudinal sections of 220 km canal network for irrigation modernisation project.",                     
+    tag:"Water Body Mapping",    
+    stats:[{l:"Length",v:"220 km"},{l:"X-Sections",v:"880+"},{l:"Output",v:"L+X Section"}] },
+  { 
+    id:8, featured:false, 
+    cat:"Monitoring",          
+    icon:"🎥", title:"Railway Progress Monitoring",      
+    loc:"Eastern India Corridor",
+    desc:"Continuous drone-based videography and change detection monitoring for a 180 km new railway line construction project.",                           
+    tag:"Project Monitoring",    
+    stats:[{l:"Length",v:"180 km"},{l:"Interval",v:"Bi-weekly"},{l:"Reports",v:"24"}] },
+];
+
+export const PROJ_CATS = [
+  "All","Urban Planning","Water & Environment","Infrastructure","Mining & Volumetric","Monitoring"
+];
+
+export const INDUSTRIES = [
+  {n:"Roads & Railways", i:"🛣",img: "https://images.unsplash.com/photo-1504307651254-35680f356dfd",},
+  {n:"Powerlines", i:"⚡",img: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e",},
+  {n:"Energy", i:"☀",img: "https://images.unsplash.com/photo-1558449028-b53a39d100fc",},
+  {n:"Cities & Industries", i:"🏙",img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab",},
+  {n:"Telecom Towers", i:"📡",img:"https://images.unsplash.com/photo-1632277232577-09bcf876d6fb",},
+  {n:"Oil & Gas", i:"🛢",img:"https://images.unsplash.com/photo-1513828583688-c52646db42da",},
+  {n:"Mining", i:"⛏",img: "https://images.unsplash.com/photo-1523848309072-c199db53f137",},
+  {n:"Agriculture", i:"🌾",img: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854",},
+];
