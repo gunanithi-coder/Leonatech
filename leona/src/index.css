@@ -1001,7 +1001,7 @@ select.form-i option { background:var(--bg-dark); }
   border-bottom: none;
 }
 .eq-section-item:hover {
-  background: rgba(255,255,255,0.02);
+  background: var(--orange-hi);
 }
 .eq-section-item:hover .eq-section-name {
   color: var(--textPri);
