@@ -111,7 +111,7 @@ const ServicesTabs = ({ go }) => {
               <ServiceCard
                 key={s.id}
                 s={s}
-                onClick={() => go('services')}
+                onClick={() => go('services', s.id)}
               />
             ))}
           </div>

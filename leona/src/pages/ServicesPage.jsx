@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { SERVICES } from '../data/content';
 import { CAT_COLORS, hexToRgb } from '../tokens/colors';
 
@@ -228,7 +229,25 @@ function ServiceBlock({ s, go }) {
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
-export default function ServicesPage({ go }) {
+export default function ServicesPage({ go ,selectedService}) {
+
+  const serviceRefs = useRef({});
+
+  useEffect(() => {
+    if (
+      selectedService &&
+      serviceRefs.current[selectedService]
+    ) {
+      setTimeout(() => {
+        serviceRefs.current[selectedService]
+          ?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+      }, 1500);
+    }
+  }, [selectedService]);
+
   return (
     <>
       <div className="phero">
@@ -248,14 +267,20 @@ export default function ServicesPage({ go }) {
         </div>
       </div>
 
-      <div className="svb-wrap">
-        {SERVICES.map((s) => (
-          <ServiceBlock
-            key={s.id}
-            s={s}
-            go={go}
-          />
-        ))}
+      <div className="svb-wrap">{
+      SERVICES.map((s) => (
+        <div
+          key={s.id}
+          ref={(el) => {
+          serviceRefs.current[s.id] = el;
+        }}
+      >
+        <ServiceBlock
+          s={s}
+          go={go}
+        />
+      </div>
+      ))}
 
         <div
           style={{
