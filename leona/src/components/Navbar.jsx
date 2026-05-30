@@ -4,10 +4,10 @@ import Logo from './Logo';
 export default function Navbar({ page, solid, go }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Close menu on page change
+  // Close menu when page changes
   useEffect(() => { setMenuOpen(false); }, [page]);
 
-  // Lock body scroll when menu is open
+  // Lock body scroll when drawer is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -22,12 +22,14 @@ export default function Navbar({ page, solid, go }) {
 
   return (
     <>
+      {/* ── MAIN NAV BAR ── */}
       <nav className={`nav${solid ? ' solid' : ''}`}>
+
         {/* Brand */}
         <div className="nav-brand" onClick={() => handleGo('home')}>
-          <Logo size={42} />
+          <Logo size={38} />
           <div className="nav-wordmark">
-            <span className="t1">LEONA TECH & GEO SOLUTIONS PRIVATE LTD</span>
+            <span className="t1">Leona Tech &amp; Geo Solutions Private Limited</span>
           </div>
         </div>
 
@@ -50,45 +52,46 @@ export default function Navbar({ page, solid, go }) {
           </li>
         </ul>
 
-        {/* Hamburger button — mobile only */}
+        {/* Hamburger — mobile only */}
         <button
           className={`hamburger${menuOpen ? ' open' : ''}`}
-          onClick={() => setMenuOpen(o => !o)}
-          aria-label="Toggle menu"
+          onClick={() => setMenuOpen(prev => !prev)}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
         >
-          <span /><span /><span />
+          <span />
+          <span />
+          <span />
         </button>
       </nav>
 
-      {/* Mobile drawer overlay */}
-      <div
-        className={`mob-overlay${menuOpen ? ' visible' : ''}`}
-        onClick={() => setMenuOpen(false)}
-      />
+      {/* Overlay */}
+      {menuOpen && (
+        <div
+          className="mob-overlay visible"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
 
-      {/* Mobile slide-in drawer */}
+      {/* Slide-in drawer */}
       <div className={`mob-drawer${menuOpen ? ' open' : ''}`}>
-        {/* Drawer header */}
         <div className="mob-drawer-head">
-          <div className="nav-brand" onClick={() => handleGo('home')}>
-            <Logo size={36} />
+          <div className="nav-brand" onClick={() => handleGo('home')} style={{ cursor:'pointer' }}>
+            <Logo size={34} />
             <div className="nav-wordmark">
-              <span className="t1">LEONA Tech &amp; Geo Solutions Pvt Ltd</span>
+              <span className="t1">Leona Tech &amp; Geo Solutions Private Limited</span>
             </div>
           </div>
-          <button className="mob-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">
-            ✕
-          </button>
+          <button className="mob-close" onClick={() => setMenuOpen(false)}>✕</button>
         </div>
 
-        {/* Drawer nav items */}
         <nav className="mob-nav">
           {navItems.map((p, i) => (
             <button
               key={p}
               className={`mob-nav-btn${page === p ? ' active' : ''}`}
               onClick={() => handleGo(p)}
-              style={{ animationDelay: menuOpen ? `${i * 0.07}s` : '0s' }}
+              style={{ animationDelay: menuOpen ? `${i * 0.07 + 0.1}s` : '0s' }}
             >
               <span className="mob-nav-num">0{i + 1}</span>
               {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -96,7 +99,6 @@ export default function Navbar({ page, solid, go }) {
           ))}
         </nav>
 
-        {/* Drawer CTA */}
         <div className="mob-drawer-foot">
           <button className="btn-primary mob-cta-btn" onClick={() => handleGo('contact')}>
             Get a Quote →

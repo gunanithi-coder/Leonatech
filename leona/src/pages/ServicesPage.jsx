@@ -183,16 +183,6 @@ export default function ServicesPage({ go }) {
         </div>
       </div>
 
-      {/* Equipment strip */}
-      <div className="eq-strip">
-        <div className="eq-row2">
-          <span className="eq-label2">Equipment</span>
-          {EQUIPMENT.map(e => (
-            <span key={e} className="eq-pill">{e}</span>
-          ))}
-        </div>
-      </div>
-
       {/* Services */}
       <div className="svb-wrap">
         {SERVICES.map(s => (
@@ -209,6 +199,6 @@ export default function ServicesPage({ go }) {
           </button>
         </div>
       </div>
-    </>
+      </>
   );
 }
