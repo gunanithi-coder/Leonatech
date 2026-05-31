@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SERVICES } from '../data/content';
 import { CAT_COLORS, hexToRgb } from '../tokens/colors';
 
@@ -83,13 +83,32 @@ function Equipment() {
 
 // ── Single service block ──────────────────────────────────────────────────────
 function ServiceBlock({ s, go }) {
+  const [visible, setVisible] = useState(false);
+const blockRef = useRef(null);
+
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+    { threshold: 0.12 }
+  );
+  if (blockRef.current) observer.observe(blockRef.current);
+  return () => observer.disconnect();
+}, []);
   const col = CAT_COLORS[s.category] || '#E05B2A';
   const rgb = hexToRgb(col);
   const photo = SERVICE_PHOTOS[s.id];
 
   return (
-    <div className="svb-block">
-      <div className="svb-top">
+        <div
+  className="svb-block"
+  ref={blockRef}
+  style={{
+    opacity: visible ? 1 : 0,
+    transform: visible ? 'translateY(0)' : 'translateY(40px)',
+    transition: 'opacity 0.65s cubic-bezier(.25,.46,.45,.94), transform 0.65s cubic-bezier(.25,.46,.45,.94)',
+  }}
+  >      
+        <div className="svb-top">
         <div className="svb-left">
           <div className="svb-head">
             <span className="svb-num-bg">{s.num}</span>
@@ -142,10 +161,13 @@ function ServiceBlock({ s, go }) {
                     <div
                       className="svb-tl-dot"
                       style={{
-                        background: `rgba(${rgb},${alpha * 0.18})`,
-                        borderColor: `rgba(${rgb},${alpha * 0.9})`,
-                        color: `rgba(${rgb},${alpha})`,
-                      }}
+                      background: `rgba(${rgb},${alpha * 0.18})`,
+                      borderColor: `rgba(${rgb},${alpha * 0.9})`,
+                      color: `rgba(${rgb},${alpha})`,
+                      opacity: visible ? 1 : 0,
+                      transform: visible ? 'scale(1)' : 'scale(0)',
+                      transition: `opacity 0.4s ease ${0.3 + i * 0.1}s, transform 0.4s ease ${0.3 + i * 0.1}s`,
+                    }}
                     >
                       0{i + 1}
                     </div>
@@ -209,12 +231,19 @@ function ServiceBlock({ s, go }) {
 
         <div className="svb-deliv-grid">
           {s.deliverables.map((d, i) => (
-            <div key={i} className="svb-deliv-item">
-              <span
-                className="svb-deliv-num"
-                style={{ color: col }}
-              >
-                0{i + 1}
+          <div
+            key={i}
+            className="svb-deliv-item"
+            style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? 'translateY(0)' : 'translateY(10px)',
+            transition: `opacity 0.4s ease ${0.5 + i * 0.07}s, transform 0.4s ease ${0.5 + i * 0.07}s`,
+          }}
+        >
+    <span
+      className="svb-deliv-num"
+      style={{ color: col }}
+    >                0{i + 1}
               </span>
 
               <span className="svb-deliv-txt">

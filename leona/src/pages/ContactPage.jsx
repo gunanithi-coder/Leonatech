@@ -1,14 +1,6 @@
 import { useState } from 'react';
 import { SERVICES } from '../data/content';
 
-
-const SectionHeader = ({ label, title }) => (
-  <div className="sec-hd">
-    <div className="sec-label">{label}</div>
-    <h2 className="sec-title">{title}</h2>
-  </div>
-);
-
 export default function ContactPage() {
   const [form, setForm] = useState({ name:'', email:'', org:'', service:'', msg:'' });
   const [sent, setSent] = useState(false);
@@ -31,8 +23,15 @@ export default function ContactPage() {
 
         {/* LEFT — INFO */}
         <div>
-          <SectionHeader label="Our Information" title="Talk to an Expert" />
-          {[
+<div style={{ marginBottom:32 }}>
+  <div style={{ display:'inline-flex', alignItems:'center', gap:12, marginBottom:12, fontSize:10, fontWeight:600, letterSpacing:4, textTransform:'uppercase', color:'var(--orange)' }}>
+    <span style={{ width:28, height:2, background:'var(--orange)', display:'block' }}></span>
+    Our Information
+  </div>
+  <h2 style={{ fontFamily:'var(--font-head)', fontSize:'clamp(28px,3vw,42px)', fontWeight:700, color:'var(--textPri)', lineHeight:1.1, letterSpacing:'-0.5px' }}>
+    Talk to an Expert
+  </h2>
+</div>          {[
             { i:'📧', l:'Email',           v:'support@ilinkdev.in' },
             { i:'📞', l:'Phone',           v:'+91 9876543210' },
             { i:'🌐', l:'Website',         v:'www.ilinkdevelopmentservices.com' },
@@ -67,7 +66,15 @@ export default function ContactPage() {
 
         {/* RIGHT — FORM */}
         <div>
-          <SectionHeader label="Send a Message" title="Request a Quote" />
+         <div style={{ marginBottom:32 }}>
+  <div style={{ display:'inline-flex', alignItems:'center', gap:12, marginBottom:12, fontSize:10, fontWeight:600, letterSpacing:4, textTransform:'uppercase', color:'var(--orange)' }}>
+    <span style={{ width:28, height:2, background:'var(--orange)', display:'block' }}></span>
+    Send a Message
+  </div>
+  <h2 style={{ fontFamily:'var(--font-head)', fontSize:'clamp(28px,3vw,42px)', fontWeight:700, color:'var(--textPri)', lineHeight:1.1, letterSpacing:'-0.5px' }}>
+    Request a Quote
+  </h2>
+</div>
           {sent ? (
             <div className="success-box">
               <div style={{ fontSize:42, marginBottom:14 }}>✅</div>

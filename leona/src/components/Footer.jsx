@@ -68,6 +68,7 @@ export default function Footer({ go }) {
           <ul>
             {[
               { label:'Home',       target:'home' },
+              { label: "About",     target: 'about' },
               { label:'Projects',   target:'projects' },
               { label:'Services',   target:'services' },
               { label:'Contact Us', target:'contact' },

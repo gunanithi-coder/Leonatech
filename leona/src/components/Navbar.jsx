@@ -13,7 +13,7 @@ export default function Navbar({ page, solid, go }) {
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
-  const navItems = ['home', 'services', 'projects', 'contact'];
+  const navItems = ['home','about', 'services', 'projects', 'contact'];
 
   const handleGo = (p) => {
     setMenuOpen(false);
@@ -29,7 +29,7 @@ export default function Navbar({ page, solid, go }) {
         <div className="nav-brand" onClick={() => handleGo('home')}>
           <Logo size={38} />
           <div className="nav-wordmark">
-            <span className="t1">Leona Tech &amp; Geo Solutions Private Limited</span>
+            <span className="t1">LEONA TECH &amp; GEO SOLUTIONS PRIVATE LIMITED</span>
           </div>
         </div>
 
@@ -79,7 +79,7 @@ export default function Navbar({ page, solid, go }) {
           <div className="nav-brand" onClick={() => handleGo('home')} style={{ cursor:'pointer' }}>
             <Logo size={34} />
             <div className="nav-wordmark">
-              <span className="t1">Leona Tech &amp; Geo Solutions Private Limited</span>
+              <span className="t1">LEONA TECH &amp; GEO SOLUTIONS PRIVATE LIMITED</span>
             </div>
           </div>
           <button className="mob-close" onClick={() => setMenuOpen(false)}>✕</button>

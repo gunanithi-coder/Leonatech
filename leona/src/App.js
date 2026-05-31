@@ -8,6 +8,7 @@ import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import ProjectsPage from './pages/ProjectsPage';
 import ContactPage from './pages/ContactPage';
+import AboutPage from "./pages/AboutPage";
 
 export default function App() {
   const [page, setPage] = useState('home');
@@ -51,6 +52,8 @@ export default function App() {
         }`}
       >
         {page === 'home' && <HomePage go={go} />}
+
+        {page === 'about' && <AboutPage go={go} />}
 
         {page === 'services' && (
           <ServicesPage
