@@ -4,6 +4,7 @@ export const SERVICES = [
     num:"01", 
     icon:"⛰", 
     title:"Topographical Survey", 
+    image:"https://plus.unsplash.com/premium_photo-1713165737075-20aebf07a82f",
     sub:"Urban Mapping & Planning",
     category:"Urban Planning",
     desc:"High-accuracy drone surveys delivering detailed topographic maps, LULC classification, 3D mesh models, DEM, DSM, and watershed analysis for urban infrastructure planning.",

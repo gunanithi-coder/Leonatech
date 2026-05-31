@@ -2,44 +2,74 @@ import { useState } from 'react';
 import { PROJECTS, PROJ_CATS } from '../data/content';
 import { CAT_COLORS, hexToRgb } from '../tokens/colors';
 
-
 const ProjectHero = ({ p }) => {
   const col = CAT_COLORS[p.cat] || '#E05B2A';
+
   return (
-    <div className="proj-hero-card">
-      <div className="proj-hero-inner">
-        <div>
-          <div style={{ marginBottom:16 }}>
-            <span className="g-badge" style={{ background:`rgba(${hexToRgb(col)},.14)`, color:col, padding:'4px 12px', fontSize:'10px' }}>
+    <div className="project-showcase">
+
+      {/* IMAGE SIDE */}
+      <div className="project-image-wrap">
+        <div className="project-image">
+          
+          <img
+              src={p.image}
+              alt={p.title}
+              className="project-image-img"
+          />
+          <div className="project-overlay" />
+          <div className="project-image-content">
+            <span
+              className="g-badge"
+              style={{
+                background: `rgba(${hexToRgb(col)},.15)`,
+                color: col
+              }}
+            >
               {p.icon} {p.cat}
             </span>
           </div>
-          <h2 style={{ fontFamily:'var(--font-head)', fontSize:32, fontWeight:800, color:'var(--textPri)', lineHeight:1.05, marginBottom:10 }}>
-            {p.title}
-          </h2>
-          <div style={{ fontSize:12, color:`rgba(${hexToRgb(col)},.75)`, marginBottom:18 }}>
-            📍 {p.loc}
-          </div>
-          <p style={{ fontSize:15, color:'var(--textSec)', lineHeight:1.85, maxWidth:580 }}>
-            {p.desc}
-          </p>
-          <div style={{ marginTop:24, display:'inline-flex', gap:10, alignItems:'center', color:'var(--orange)', fontSize:12, fontWeight:500, letterSpacing:2, textTransform:'uppercase', cursor:'pointer' }}>
-            Featured Project <span>→</span>
-          </div>
-        </div>
-        <div className="proj-hero-stats">
-          {p.stats.map((st, i) => (
-            <div key={i} className="proj-hero-stat">
-              <div className="proj-hero-stat-l">{st.l}</div>
-              <div className="proj-hero-stat-v">{st.v}</div>
-            </div>
-          ))}
-          <div style={{ background:'var(--bg-light)', border:'0.5px solid var(--border)', borderRadius:4, padding:'14px 18px' }}>
-            <div className="proj-hero-stat-l">Service</div>
-            <div style={{ fontFamily:'var(--font-head)', fontSize:13, fontWeight:700, color:col }}>{p.tag}</div>
-          </div>
         </div>
       </div>
+
+      {/* CONTENT SIDE */}
+      <div className="project-content">
+
+        <h2>{p.title}</h2>
+
+        <div className="project-location">
+          📍 {p.loc}
+        </div>
+
+        <div className="project-section">
+          <h4>Challenge</h4>
+          <p>
+            Large-scale mapping requirements with high accuracy,
+            tight deadlines and multi-source spatial datasets.
+          </p>
+        </div>
+
+        <div className="project-section">
+          <h4>Solution</h4>
+          <p>{p.tag}</p>
+        </div>
+
+        <div className="project-section">
+          <h4>Results</h4>
+
+          <ul className="results-list">
+            <li>✔ 25% Faster Planning</li>
+            <li>✔ 1000+ Acres Mapped</li>
+            <li>✔ High Accuracy Outputs</li>
+          </ul>
+        </div>
+
+        <button className="case-study-btn">
+          View Case Study →
+        </button>
+
+      </div>
+
     </div>
   );
 };
