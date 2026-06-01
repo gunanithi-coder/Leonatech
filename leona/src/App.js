@@ -8,15 +8,15 @@ import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import ProjectsPage from './pages/ProjectsPage';
 import ContactPage from './pages/ContactPage';
-import AboutPage from "./pages/AboutPage";
+import AboutPage from './pages/AboutPage';
+import LogoIntro from './components/LogoIntro';
 
 export default function App() {
   const [page, setPage] = useState('home');
   const [solid, setSolid] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
-
-  // NEW
   const [selectedService, setSelectedService] = useState(null);
+  const [introComplete, setIntroComplete] = useState(false); // NEW
 
   const pendingPage = useRef(null);
 
@@ -26,15 +26,11 @@ export default function App() {
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
-  // UPDATED
   const go = (p, serviceId = null) => {
     setSelectedService(serviceId);
-
     if (p === page && serviceId === null) return;
-
     pendingPage.current = p;
     setTransitioning(true);
-
     setTimeout(() => {
       setPage(pendingPage.current);
       window.scrollTo({ top: 0, behavior: 'instant' });
@@ -44,33 +40,31 @@ export default function App() {
 
   return (
     <>
-      <Navbar page={page} solid={solid} go={go} />
+      {/* LOGO INTRO — shows only on first load */}
+      {!introComplete && (
+        <LogoIntro onComplete={() => setIntroComplete(true)} />
+      )}
 
-      <main
-        className={`page-transition${
-          transitioning ? ' fade-out' : ' fade-in'
-        }`}
-      >
-        {page === 'home' && <HomePage go={go} />}
+      {/* MAIN SITE — fades in after intro */}
+      <div style={{
+        opacity: introComplete ? 1 : 0,
+        transition: 'opacity 0.6s ease',
+        pointerEvents: introComplete ? 'auto' : 'none'
+      }}>
+        <Navbar page={page} solid={solid} go={go} />
 
-        {page === 'about' && <AboutPage go={go} />}
+        <main className={`page-transition${transitioning ? ' fade-out' : ' fade-in'}`}>
+          {page === 'home'     && <HomePage go={go} />}
+          {page === 'about'    && <AboutPage go={go} />}
+          {page === 'services' && <ServicesPage go={go} selectedService={selectedService} />}
+          {page === 'projects' && <ProjectsPage go={go} />}
+          {page === 'contact'  && <ContactPage />}
+        </main>
 
-        {page === 'services' && (
-          <ServicesPage
-            go={go}
-            selectedService={selectedService}
-          />
-        )}
-
-        {page === 'projects' && <ProjectsPage go={go} />}
-
-        {page === 'contact' && <ContactPage />}
-      </main>
-
-      <Footer go={go} />
-
-      <BackToTop />
-      <WhatsAppFloat />
+        <Footer go={go} />
+        <BackToTop />
+        <WhatsAppFloat />
+      </div>
     </>
   );
 }

@@ -31,7 +31,7 @@ html { scroll-behavior:smooth; }
 body { font-family:var(--font-body); background:var(--bg-deep); color:var(--textPri); overflow-x:hidden; line-height:1.65; }
 
 /* NAV */
-.nav { position:sticky; top:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:0 60px; height:68px; background:rgba(7,16,31,0); transition:background .4s,border-color .4s; border-bottom:1px solid transparent; }
+.nav { position:sticky; top:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:0 60px; height:px; background:rgba(7,16,31,0); transition:background .4s,border-color .4s; border-bottom:1px solid transparent; }
 .nav.solid { background:rgba(5,11,22,.75); backdrop-filter:blur(28px); border-bottom:1px solid rgba(255,255,255,0.08);box-shadow:0 10px 40px rgba(0,0,0,.25) }
 .nav-brand { display:flex; align-items:center; gap:12px; cursor:pointer; }
 .nav-wordmark { display:flex; flex-direction:column; gap:1px; }

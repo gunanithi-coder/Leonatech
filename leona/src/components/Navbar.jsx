@@ -4,10 +4,8 @@ import Logo from './Logo';
 export default function Navbar({ page, solid, go }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Close menu when page changes
   useEffect(() => { setMenuOpen(false); }, [page]);
 
-  // Lock body scroll when drawer is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -27,10 +25,8 @@ export default function Navbar({ page, solid, go }) {
 
         {/* Brand */}
         <div className="nav-brand" onClick={() => handleGo('home')}>
-          <Logo size={38} />
-          <div className="nav-wordmark">
-            <span className="t1">LEONA TECH &amp; GEO SOLUTIONS PRIVATE LIMITED</span>
-          </div>
+          <Logo size={64} />
+          {/* ✅ REMOVED nav-wordmark div — Logo already shows shield + text */}
         </div>
 
         {/* Desktop links */}
@@ -77,10 +73,8 @@ export default function Navbar({ page, solid, go }) {
       <div className={`mob-drawer${menuOpen ? ' open' : ''}`}>
         <div className="mob-drawer-head">
           <div className="nav-brand" onClick={() => handleGo('home')} style={{ cursor:'pointer' }}>
-            <Logo size={34} />
-            <div className="nav-wordmark">
-              <span className="t1">LEONA TECH &amp; GEO SOLUTIONS PRIVATE LIMITED</span>
-            </div>
+            <Logo size={54} />
+            {/* ✅ REMOVED nav-wordmark div here too */}
           </div>
           <button className="mob-close" onClick={() => setMenuOpen(false)}>✕</button>
         </div>

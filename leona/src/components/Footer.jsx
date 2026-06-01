@@ -1,4 +1,5 @@
 import Logo from './Logo';
+
 export default function Footer({ go }) {
   return (
     <footer className="footer">
@@ -9,8 +10,8 @@ export default function Footer({ go }) {
         {/* LEFT — BRAND + SOCIAL */}
         <div>
           <div style={{ marginBottom:12 }}>
-            <Logo size={42} />
-            <div style={{ fontFamily:'var(--font-head)', fontSize:17, fontWeight:800, color:'var(--orange)', letterSpacing:2 }}>Leona Tech & <br/>Geo Solutions Pvt Ltd <br/></div>
+            <Logo size={58} />
+            {/* ✅ REMOVED the duplicate "Leona Tech & Geo Solutions Pvt Ltd" div */}
           </div>
           <p className="footer-brand-p">
             High-accuracy drone surveying and geospatial solutions across Asia, Middle East, Africa, and South East Asia.
