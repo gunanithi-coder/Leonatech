@@ -1,311 +1,183 @@
 import { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, useAnimationFrame } from "framer-motion";
+
+const EASE = [0.22, 1, 0.36, 1];
+
+// 🔥 INCREASED INTRO LOGO SIZE (ONLY VISUAL IN INTRO)
+const NAV_SIZE = 50;
+// navbar match size stays unchanged
 
 export default function LogoIntro({ onComplete }) {
-const [phase, setPhase] = useState("dark");
-const canvasRef = useRef(null);
-const rafRef = useRef(null);
+  const startRef = useRef(null);
 
-useEffect(() => {
-const timers = [
-setTimeout(() => setPhase("logo"), 800),
-setTimeout(() => setPhase("text"), 2200),
-setTimeout(() => setPhase("exit"), 5000),
-setTimeout(() => {
-if (onComplete) onComplete();
-}, 6000),
-];
+  const [progress, setProgress] = useState(0);
 
+  const [iconReady, setIconReady] = useState(false);
+  const [textReady, setTextReady] = useState(false);
 
-return () => timers.forEach(clearTimeout);
-
-
-}, [onComplete]);
-
-useEffect(() => {
-const canvas = canvasRef.current;
-if (!canvas) return;
-
-
-const ctx = canvas.getContext("2d");
-
-const resize = () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-};
-
-resize();
-window.addEventListener("resize", resize);
-
-const particles = Array.from({ length: 90 }, () => ({
-  x: Math.random() * window.innerWidth,
-  y: Math.random() * window.innerHeight,
-  r: Math.random() * 1.4 + 0.2,
-  vx: (Math.random() - 0.5) * 0.08,
-  vy: (Math.random() - 0.5) * 0.08,
-  opacity: Math.random() * 0.25 + 0.05,
-  phase: Math.random() * Math.PI * 2,
-}));
-
-let frame = 0;
-
-const draw = () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  particles.forEach((p) => {
-    p.x += p.vx;
-    p.y += p.vy;
-
-    if (p.x < 0) p.x = canvas.width;
-    if (p.x > canvas.width) p.x = 0;
-
-    if (p.y < 0) p.y = canvas.height;
-    if (p.y > canvas.height) p.y = 0;
-
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-
-    ctx.fillStyle = `rgba(255,255,255,${
-      p.opacity + Math.sin(frame * 0.01 + p.phase) * 0.05
-    })`;
-
-    ctx.fill();
+  const [target, setTarget] = useState({
+    x: 0,
+    y: 0,
+    scale: 1,
   });
 
-  frame++;
-  rafRef.current = requestAnimationFrame(draw);
-};
+  // ---------------- LOCK SCROLL ----------------
+useEffect(() => {
+  const t1 = setTimeout(() => setIconReady(true), 900);   // was 700
+  const t2 = setTimeout(() => setTextReady(true), 1500);  // was 1200
 
-draw();
-
-return () => {
-  cancelAnimationFrame(rafRef.current);
-  window.removeEventListener("resize", resize);
-};
-
-
+  return () => {
+    clearTimeout(t1);
+    clearTimeout(t2);
+  };
 }, []);
 
-return ( <AnimatePresence>
-<motion.div
-initial={{ opacity: 1 }}
-animate={{
-opacity: phase === "exit" ? 0 : 1,
-}}
-transition={{
-duration: 1.2,
-ease: "easeInOut",
-}}
-style={{
-position: "fixed",
-inset: 0,
-zIndex: 99999,
-overflow: "hidden",
-background:
-"radial-gradient(circle at center,#0a1425 0%,#05070b 60%,#000000 100%)",
-}}
->
-{/* ATMOSPHERIC GLOW */}
+useEffect(() => {
+  document.body.style.overflow = "hidden";
+  return () => (document.body.style.overflow = "");
+}, []);
+  // ---------------- FAST ICON/TEXT REVEAL ----------------
+ 
+  // ---------------- MEASURE NAVBAR ----------------
+  useEffect(() => {
+    const measure = () => {
+      const el = document.getElementById("navbar-logo-anchor");
+      if (!el) return;
 
+      const r = el.getBoundingClientRect();
 
-    <motion.div
-      animate={{
-        opacity: [0.08, 0.18, 0.08],
-        scale: [1, 1.05, 1],
-      }}
-      transition={{
-        duration: 8,
-        repeat: Infinity,
-      }}
-      style={{
-        position: "absolute",
-        inset: 0,
-        background:
-          "radial-gradient(circle at center, rgba(255,255,255,.08), transparent 70%)",
-      }}
-    />
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
 
-    {/* PARTICLES */}
+      setTarget({
+        x: cx - window.innerWidth / 2,
+        y: cy - window.innerHeight / 2,
+        scale: r.height / NAV_SIZE,
+      });
+    };
 
-    <canvas
-      ref={canvasRef}
-      style={{
-        position: "absolute",
-        inset: 0,
-        pointerEvents: "none",
-      }}
-    />
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
 
-    {/* CENTER CONTENT */}
+  // ---------------- SHORTER TIMELINE ----------------
+  useAnimationFrame((t) => {
+    if (!startRef.current) startRef.current = t;
 
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {/* ICON */}
+    // 🔥 reduced from ~7600ms → ~5600ms (faster intro)
+    const p = Math.min((t - startRef.current) / 9200, 1);
 
-      <div
-        style={{
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <motion.img
-          src="/leona-icon.png"
-          alt="Leona"
-          initial={{
-            opacity: 0,
-            scale: 0.82,
-            y: 15,
-          }}
-          animate={{
-            opacity: phase !== "dark" ? 1 : 0,
-            scale: phase !== "dark" ? 1 : 0.82,
-            y: phase !== "dark" ? 0 : 15,
-          }}
-          transition={{
-            duration: 1.8,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          style={{
-            width: "180px",
-            height: "180px",
-            objectFit: "contain",
-            filter:
-              "drop-shadow(0 0 25px rgba(255,255,255,.08))",
-          }}
-        />
+    setProgress(p);
 
-        {/* LIGHT SWEEP */}
+    if (p === 1) {
+      setTimeout(() => onComplete?.(), 150);
+    }
+  });
 
-        <motion.div
-          initial={{
-            x: "-150%",
-          }}
-          animate={{
-            x:
-              phase === "text" || phase === "exit"
-                ? "150%"
-                : "-150%",
-          }}
-          transition={{
-            duration: 1.6,
-            ease: "easeInOut",
-          }}
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(105deg, transparent, rgba(255,255,255,.35), transparent)",
-          }}
-        />
-      </div>
+  const ease = (t) => t * t * (3 - 2 * t);
 
-      {/* LEONA WORDMARK REVEAL */}
+  const t = ease(progress);
 
+  const x = target.x * t;
+  const y = target.y * t;
+
+  const scale = 1 - (1 - target.scale) * t;
+
+  const fadeOut = progress > 0.92;
+
+  return (
+    <>
+      {/* BACKDROP */}
       <motion.div
-        initial={{
-          width: 0,
-          opacity: 0,
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 99999,
+          background:
+            "radial-gradient(circle at center, #0b1220 0%, #05070b 55%, #000 100%)",
+          pointerEvents: "none",
         }}
         animate={{
-          width:
-            phase === "text" || phase === "exit"
-              ? "500px"
-              : 0,
-          opacity:
-            phase === "text" || phase === "exit"
-              ? 1
-              : 0,
+          opacity: fadeOut ? 0 : 1,
         }}
         transition={{
           duration: 1.2,
-          ease: [0.16, 1, 0.3, 1],
-        }}
-        style={{
-          overflow: "hidden",
-          marginTop: "18px",
-        }}
-      >
-        <img
-          src="/leona-text.png"
-          alt="Leona"
-          style={{
-            width: "500px",
-            maxWidth: "90vw",
-            display: "block",
-          }}
-        />
-      </motion.div>
-
-      {/* SUBTITLE */}
-
-      <motion.div
-        initial={{
-          opacity: 0,
-          y: 20,
-        }}
-        animate={{
-          opacity:
-            phase === "text" || phase === "exit"
-              ? 1
-              : 0,
-          y:
-            phase === "text" || phase === "exit"
-              ? 0
-              : 20,
-        }}
-        transition={{
-          delay: 0.4,
-          duration: 1,
-        }}
-        style={{
-          marginTop: "10px",
-          color: "rgba(255,255,255,.65)",
-          fontSize: "12px",
-          letterSpacing: "0.55em",
-          textTransform: "uppercase",
-          fontWeight: 300,
-        }}
-      >
-        TECH & GEO SOLUTIONS
-      </motion.div>
-
-      {/* THIN LINE */}
-
-      <motion.div
-        initial={{
-          scaleX: 0,
-        }}
-        animate={{
-          scaleX:
-            phase === "text" || phase === "exit"
-              ? 1
-              : 0,
-        }}
-        transition={{
-          delay: 0.2,
-          duration: 1,
-        }}
-        style={{
-          width: "260px",
-          height: "1px",
-          marginTop: "18px",
-          background:
-            "linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent)",
-          transformOrigin: "center",
+          ease: EASE,
         }}
       />
-    </div>
-  </motion.div>
-</AnimatePresence>
 
+      {/* LOGO GROUP */}
+      <motion.div
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 100000,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: "none",
+          willChange: "transform",
+          transform: "translateZ(0)",
+        }}
+        animate={{
+          x,
+          y,
+          scale,
+          opacity: fadeOut ? 0 : 1,
+        }}
+        transition={{
+          duration: 1.05,
+          ease: EASE,
+        }}
+      >
+        {/* ICON + TEXT */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+          }}
+        >
+          {/* 🔥 BIGGER ICON (INTRO ONLY) */}
+          <motion.img
+            src="/leona-icon.png"
+            alt="Leona Shield"
+            style={{
+              height: NAV_SIZE,
+              width: "auto",
+              objectFit: "contain",
+            }}
+            animate={{
+              opacity: iconReady ? 1 : 0,
+              scale: iconReady ? 1 : 0.96,
+            }}
+            transition={{
+              duration: 0.8,
+              ease: EASE,
+            }}
+          />
 
-);
+          {/* 🔥 BIGGER TEXT (INTRO ONLY) */}
+          <motion.img
+            src="/leona-text.png"
+            alt="Leona Tech & Geo Solutions Private Limited"
+            style={{
+              height: NAV_SIZE * 0.7,
+              width: "auto",
+              objectFit: "contain",
+            }}
+            animate={{
+              opacity: textReady ? 1 : 0,
+              x: textReady ? 0 : 6,
+            }}
+            transition={{
+              duration: 0.9,
+              ease: EASE,
+            }}
+          />
+        </div>
+      </motion.div>
+    </>
+  );
 }

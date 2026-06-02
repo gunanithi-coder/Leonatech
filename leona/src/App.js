@@ -71,6 +71,7 @@ export default function App() {
           page={page}
           solid={solid}
           go={go}
+          introDone={introDone}
         />
 
         <main

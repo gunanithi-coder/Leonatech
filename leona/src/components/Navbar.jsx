@@ -1,17 +1,32 @@
-import { useState, useEffect } from 'react';
-import Logo from './Logo';
+import { useState, useEffect } from "react";
+import Logo from "./Logo";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function Navbar({ page, solid, go }) {
+export default function Navbar({ page, solid, go, introDone }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showItems, setShowItems] = useState(false);
 
-  useEffect(() => { setMenuOpen(false); }, [page]);
+  const navItems = ["home", "about", "services", "projects", "contact"];
+
+  // ---------------- SCROLL LOCK RESET ----------------
+  useEffect(() => {
+    if (introDone) {
+      const t = setTimeout(() => {
+        setShowItems(true);
+      }, 600); // slight delay after morph completes
+
+      return () => clearTimeout(t);
+    }
+  }, [introDone]);
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [menuOpen]);
+    setMenuOpen(false);
+  }, [page]);
 
-  const navItems = ['home','about', 'services', 'projects', 'contact'];
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => (document.body.style.overflow = "");
+  }, [menuOpen]);
 
   const handleGo = (p) => {
     setMenuOpen(false);
@@ -20,40 +35,73 @@ export default function Navbar({ page, solid, go }) {
 
   return (
     <>
-      {/* ── MAIN NAV BAR ── */}
-      <nav className={`nav${solid ? ' solid' : ''}`}>
+      {/* NAVBAR */}
+      <nav className={`nav ${solid ? "solid" : ""}`}>
 
-        {/* Brand */}
-        <div className="nav-brand" onClick={() => handleGo('home')}>
-          <Logo size={64} />
-          {/* ✅ REMOVED nav-wordmark div — Logo already shows shield + text */}
+        {/* BRAND */}
+        <div
+          id="navbar-logo-anchor"
+          className="nav-brand"
+          onClick={() => handleGo("home")}
+        >
+          <Logo size={50} />
         </div>
 
-        {/* Desktop links */}
+        {/* DESKTOP LINKS */}
         <ul className="nav-links">
-          {navItems.map(p => (
-            <li key={p}>
+          {navItems.map((p, i) => (
+            <motion.li
+              key={p}
+              initial={{ opacity: 0, y: -10 }}
+              animate={
+                showItems
+                  ? { opacity: 1, y: 0 }
+                  : { opacity: 0, y: -10 }
+              }
+              transition={{
+                delay: i * 0.12,
+                duration: 0.6,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
               <button
-                className={`nav-btn${page === p ? ' active' : ''}`}
+                className={`nav-btn ${
+                  page === p ? "active" : ""
+                }`}
                 onClick={() => handleGo(p)}
               >
                 {p.charAt(0).toUpperCase() + p.slice(1)}
               </button>
-            </li>
+            </motion.li>
           ))}
-          <li>
-            <button className="nav-btn nav-cta" onClick={() => handleGo('contact')}>
+
+          {/* CTA */}
+          <motion.li
+            initial={{ opacity: 0, y: -10 }}
+            animate={
+              showItems
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: -10 }
+            }
+            transition={{
+              delay: navItems.length * 0.12,
+              duration: 0.6,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            <button
+              className="nav-btn nav-cta"
+              onClick={() => handleGo("contact")}
+            >
               Get a Quote
             </button>
-          </li>
+          </motion.li>
         </ul>
 
-        {/* Hamburger — mobile only */}
+        {/* HAMBURGER */}
         <button
-          className={`hamburger${menuOpen ? ' open' : ''}`}
-          onClick={() => setMenuOpen(prev => !prev)}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={menuOpen}
+          className={`hamburger ${menuOpen ? "open" : ""}`}
+          onClick={() => setMenuOpen((p) => !p)}
         >
           <span />
           <span />
@@ -61,46 +109,71 @@ export default function Navbar({ page, solid, go }) {
         </button>
       </nav>
 
-      {/* Overlay */}
-      {menuOpen && (
-        <div
-          className="mob-overlay visible"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
+      {/* MOBILE OVERLAY */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            className="mob-overlay visible"
+            onClick={() => setMenuOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Slide-in drawer */}
-      <div className={`mob-drawer${menuOpen ? ' open' : ''}`}>
+      {/* MOBILE DRAWER */}
+      <div className={`mob-drawer ${menuOpen ? "open" : ""}`}>
         <div className="mob-drawer-head">
-          <div className="nav-brand" onClick={() => handleGo('home')} style={{ cursor:'pointer' }}>
-            <Logo size={54} />
-            {/* ✅ REMOVED nav-wordmark div here too */}
+          <div
+            className="nav-brand"
+            onClick={() => handleGo("home")}
+          >
+            <Logo size={45} />
           </div>
-          <button className="mob-close" onClick={() => setMenuOpen(false)}>✕</button>
+          <button
+            className="mob-close"
+            onClick={() => setMenuOpen(false)}
+          >
+            ✕
+          </button>
         </div>
 
         <nav className="mob-nav">
           {navItems.map((p, i) => (
-            <button
+            <motion.button
               key={p}
-              className={`mob-nav-btn${page === p ? ' active' : ''}`}
+              className={`mob-nav-btn ${
+                page === p ? "active" : ""
+              }`}
               onClick={() => handleGo(p)}
-              style={{ animationDelay: menuOpen ? `${i * 0.07 + 0.1}s` : '0s' }}
+              initial={{ opacity: 0, x: -10 }}
+              animate={
+                showItems
+                  ? { opacity: 1, x: 0 }
+                  : { opacity: 0, x: -10 }
+              }
+              transition={{
+                delay: i * 0.08,
+                duration: 0.5,
+                ease: [0.22, 1, 0.36, 1],
+              }}
             >
-              <span className="mob-nav-num">0{i + 1}</span>
+              <span className="mob-nav-num">
+                0{i + 1}
+              </span>
               {p.charAt(0).toUpperCase() + p.slice(1)}
-            </button>
+            </motion.button>
           ))}
         </nav>
 
         <div className="mob-drawer-foot">
-          <button className="btn-primary mob-cta-btn" onClick={() => handleGo('contact')}>
+          <button
+            className="btn-primary mob-cta-btn"
+            onClick={() => handleGo("contact")}
+          >
             Get a Quote →
           </button>
-          <div className="mob-contact-info">
-            <a href="tel:+919945482812">📞 +91 99454 82812</a>
-            <a href="mailto:support@ilinkdev.in">✉ support@ilinkdev.in</a>
-          </div>
         </div>
       </div>
     </>
