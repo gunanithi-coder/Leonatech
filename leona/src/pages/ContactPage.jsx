@@ -32,9 +32,9 @@ export default function ContactPage() {
     Talk to an Expert
   </h2>
 </div>          {[
-            { i:'📧', l:'Email',           v:'support@ilinkdev.in' },
+            { i:'📧', l:'Email',           v:'support@leona' },
             { i:'📞', l:'Phone',           v:'+91 9876543210' },
-            { i:'🌐', l:'Website',         v:'www.ilinkdevelopmentservices.com' },
+            { i:'🌐', l:'Website',         v:'www.leona.com' },
             { i:'🌍', l:'Global Coverage', v:'Asian Subcontinent · Middle East · Africa · South East Asia' },
           ].map(ci => (
             <div key={ci.l} className="ci-item">

@@ -83,7 +83,7 @@ export default function Footer({ go }) {
         <div className="footer-col">
           <div className="footer-col-h">Contact</div>
           <ul>
-            <li>support@ilinkdev.in</li>
+            <li>support@leona</li>
             <li>+91 9876543210</li>
           </ul>
         </div>
