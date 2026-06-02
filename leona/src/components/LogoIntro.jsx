@@ -1,228 +1,311 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function LogoIntro({ onComplete }) {
-  const [phase, setPhase] = useState('scan');
-  // phases: scan → reveal → particles → type → fly → done
-  const [typedText, setTypedText] = useState('');
-  const canvasRef = useRef(null);
-  const animRef = useRef(null);
-  const tagline = 'Precision from Above. Intelligence Below.';
+const [phase, setPhase] = useState("dark");
+const canvasRef = useRef(null);
+const rafRef = useRef(null);
 
-  // PHASE TIMELINE
-  useEffect(() => {
-    const t1 = setTimeout(() => setPhase('reveal'),    800);   // scan done → logo clips in
-    const t2 = setTimeout(() => setPhase('particles'), 1400);  // particles start
-    const t3 = setTimeout(() => setPhase('type'),      1800);  // tagline types
-    const t4 = setTimeout(() => setPhase('fly'),       4200);  // logo flies to nav
-    const t5 = setTimeout(() => setPhase('done'),      5100);  // unmount
-    const t6 = setTimeout(() => onComplete(),          5000);  // site fades in
+useEffect(() => {
+const timers = [
+setTimeout(() => setPhase("logo"), 800),
+setTimeout(() => setPhase("text"), 2200),
+setTimeout(() => setPhase("exit"), 5000),
+setTimeout(() => {
+if (onComplete) onComplete();
+}, 6000),
+];
 
-    return () => [t1,t2,t3,t4,t5,t6].forEach(clearTimeout);
-  }, [onComplete]);
 
-  // TYPEWRITER EFFECT
-  useEffect(() => {
-    if (phase !== 'type') return;
-    let i = 0;
-    setTypedText('');
-    const interval = setInterval(() => {
-      i++;
-      setTypedText(tagline.slice(0, i));
-      if (i >= tagline.length) clearInterval(interval);
-    }, 52);
-    return () => clearInterval(interval);
-  }, [phase]);
+return () => timers.forEach(clearTimeout);
 
-  // PARTICLE CANVAS
-  useEffect(() => {
-    if (phase !== 'particles' && phase !== 'type' && phase !== 'fly') return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
 
-    const COLS = Math.floor(canvas.width  / 36);
-    const ROWS = Math.floor(canvas.height / 36);
-    const dots = [];
+}, [onComplete]);
 
-    for (let r = 0; r < ROWS; r++) {
-      for (let c = 0; c < COLS; c++) {
-        if (Math.random() > 0.72) {
-          dots.push({
-            x: c * 36 + 18,
-            y: r * 36 + 18,
-            opacity: Math.random() * 0.4 + 0.05,
-            speed: Math.random() * 0.008 + 0.003,
-            phase: Math.random() * Math.PI * 2,
-          });
-        }
-      }
-    }
+useEffect(() => {
+const canvas = canvasRef.current;
+if (!canvas) return;
 
-    let frame = 0;
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      dots.forEach(d => {
-        const pulse = Math.sin(frame * d.speed + d.phase);
-        const alpha = d.opacity + pulse * 0.15;
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, 1.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(245,166,35,${Math.max(0, alpha)})`;
-        ctx.fill();
-      });
-      frame++;
-      animRef.current = requestAnimationFrame(draw);
-    };
-    draw();
 
-    return () => {
-      if (animRef.current) cancelAnimationFrame(animRef.current);
-    };
-  }, [phase]);
+const ctx = canvas.getContext("2d");
 
-  if (phase === 'done') return null;
+const resize = () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+};
 
-  const isFly = phase === 'fly';
+resize();
+window.addEventListener("resize", resize);
 
-  return (
-    <>
-      {/* ── DARK OVERLAY ── */}
-      <div style={{
-        position: 'fixed', inset: 0,
-        background: '#0D1526',
-        zIndex: 9998,
-        opacity: isFly ? 0 : 1,
-        transition: 'opacity 0.9s ease',
-        pointerEvents: 'none',
-      }} />
+const particles = Array.from({ length: 90 }, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  r: Math.random() * 1.4 + 0.2,
+  vx: (Math.random() - 0.5) * 0.08,
+  vy: (Math.random() - 0.5) * 0.08,
+  opacity: Math.random() * 0.25 + 0.05,
+  phase: Math.random() * Math.PI * 2,
+}));
 
-      {/* ── PARTICLE CANVAS ── */}
-      <canvas
-        ref={canvasRef}
+let frame = 0;
+
+const draw = () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach((p) => {
+    p.x += p.vx;
+    p.y += p.vy;
+
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+
+    if (p.y < 0) p.y = canvas.height;
+    if (p.y > canvas.height) p.y = 0;
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+
+    ctx.fillStyle = `rgba(255,255,255,${
+      p.opacity + Math.sin(frame * 0.01 + p.phase) * 0.05
+    })`;
+
+    ctx.fill();
+  });
+
+  frame++;
+  rafRef.current = requestAnimationFrame(draw);
+};
+
+draw();
+
+return () => {
+  cancelAnimationFrame(rafRef.current);
+  window.removeEventListener("resize", resize);
+};
+
+
+}, []);
+
+return ( <AnimatePresence>
+<motion.div
+initial={{ opacity: 1 }}
+animate={{
+opacity: phase === "exit" ? 0 : 1,
+}}
+transition={{
+duration: 1.2,
+ease: "easeInOut",
+}}
+style={{
+position: "fixed",
+inset: 0,
+zIndex: 99999,
+overflow: "hidden",
+background:
+"radial-gradient(circle at center,#0a1425 0%,#05070b 60%,#000000 100%)",
+}}
+>
+{/* ATMOSPHERIC GLOW */}
+
+
+    <motion.div
+      animate={{
+        opacity: [0.08, 0.18, 0.08],
+        scale: [1, 1.05, 1],
+      }}
+      transition={{
+        duration: 8,
+        repeat: Infinity,
+      }}
+      style={{
+        position: "absolute",
+        inset: 0,
+        background:
+          "radial-gradient(circle at center, rgba(255,255,255,.08), transparent 70%)",
+      }}
+    />
+
+    {/* PARTICLES */}
+
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "absolute",
+        inset: 0,
+        pointerEvents: "none",
+      }}
+    />
+
+    {/* CENTER CONTENT */}
+
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {/* ICON */}
+
+      <div
         style={{
-          position: 'fixed', inset: 0,
-          zIndex: 9999,
-          opacity: (phase === 'particles' || phase === 'type') ? 1 : 0,
-          transition: 'opacity 0.6s ease',
-          pointerEvents: 'none',
+          position: "relative",
+          overflow: "hidden",
         }}
-      />
-
-      {/* ── SCAN LINE ── */}
-      {phase === 'scan' && (
-        <div style={{
-          position: 'fixed', zIndex: 10001,
-          top: 0, left: '-100%',
-          width: '100%', height: '2px',
-          background: 'linear-gradient(90deg, transparent, #F5A623, #FFBA45, transparent)',
-          boxShadow: '0 0 18px 4px rgba(245,166,35,0.5)',
-          animation: 'scanLine 0.75s cubic-bezier(0.4,0,0.2,1) forwards',
-          pointerEvents: 'none',
-        }} />
-      )}
-
-      {/* ── LOGO ── */}
-      <div style={{
-        position: 'fixed',
-        zIndex: 10002,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '16px',
-        pointerEvents: 'none',
-        transition: isFly
-          ? 'all 0.9s cubic-bezier(0.77,0,0.18,1)'
-          : 'none',
-
-        ...(phase === 'scan' && {
-          top: '50%', left: '50%',
-          transform: 'translate(-50%, -50%) scale(1)',
-          opacity: 0,
-        }),
-        ...((phase === 'reveal' || phase === 'particles') && {
-          top: '50%', left: '50%',
-          transform: 'translate(-50%, -50%) scale(1)',
-          opacity: 1,
-          animation: 'clipReveal 0.55s cubic-bezier(0.25,0.46,0.45,0.94) forwards',
-        }),
-        ...(phase === 'type' && {
-          top: '50%', left: '50%',
-          transform: 'translate(-50%, -50%) scale(1)',
-          opacity: 1,
-        }),
-        ...(isFly && {
-          top: '18px', left: '28px',
-          transform: 'translate(0,0) scale(0.52)',
-          opacity: 0,
-        }),
-      }}>
-        <img
+      >
+        <motion.img
           src="/leona-icon.png"
-          alt="Leona Shield"
+          alt="Leona"
+          initial={{
+            opacity: 0,
+            scale: 0.82,
+            y: 15,
+          }}
+          animate={{
+            opacity: phase !== "dark" ? 1 : 0,
+            scale: phase !== "dark" ? 1 : 0.82,
+            y: phase !== "dark" ? 0 : 15,
+          }}
+          transition={{
+            duration: 1.8,
+            ease: [0.16, 1, 0.3, 1],
+          }}
           style={{
-            height: '100px', width: 'auto',
-            objectFit: 'contain',
-            filter: phase === 'scan' ? 'none'
-              : 'drop-shadow(0 0 18px rgba(245,166,35,0.35))',
+            width: "180px",
+            height: "180px",
+            objectFit: "contain",
+            filter:
+              "drop-shadow(0 0 25px rgba(255,255,255,.08))",
           }}
         />
+
+        {/* LIGHT SWEEP */}
+
+        <motion.div
+          initial={{
+            x: "-150%",
+          }}
+          animate={{
+            x:
+              phase === "text" || phase === "exit"
+                ? "150%"
+                : "-150%",
+          }}
+          transition={{
+            duration: 1.6,
+            ease: "easeInOut",
+          }}
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(105deg, transparent, rgba(255,255,255,.35), transparent)",
+          }}
+        />
+      </div>
+
+      {/* LEONA WORDMARK REVEAL */}
+
+      <motion.div
+        initial={{
+          width: 0,
+          opacity: 0,
+        }}
+        animate={{
+          width:
+            phase === "text" || phase === "exit"
+              ? "500px"
+              : 0,
+          opacity:
+            phase === "text" || phase === "exit"
+              ? 1
+              : 0,
+        }}
+        transition={{
+          duration: 1.2,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+        style={{
+          overflow: "hidden",
+          marginTop: "18px",
+        }}
+      >
         <img
           src="/leona-text.png"
           alt="Leona"
           style={{
-            height: '88px', width: 'auto',
-            objectFit: 'contain',
+            width: "500px",
+            maxWidth: "90vw",
+            display: "block",
           }}
         />
-      </div>
+      </motion.div>
 
-      {/* ── TAGLINE TYPEWRITER ── */}
-      <div style={{
-        position: 'fixed',
-        zIndex: 10002,
-        top: 'calc(50% + 90px)',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        pointerEvents: 'none',
-        opacity: (phase === 'type') ? 1 : 0,
-        transition: 'opacity 0.4s ease',
-        whiteSpace: 'nowrap',
-      }}>
-        <span style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          fontSize: '13px',
-          fontWeight: 500,
-          letterSpacing: '3px',
-          textTransform: 'uppercase',
-          color: 'rgba(245,166,35,0.75)',
-        }}>
-          {typedText}
-          <span style={{
-            display: 'inline-block',
-            width: '2px', height: '14px',
-            background: '#F5A623',
-            marginLeft: '2px',
-            verticalAlign: 'middle',
-            animation: 'blink 0.7s step-end infinite',
-          }} />
-        </span>
-      </div>
+      {/* SUBTITLE */}
 
-      {/* ── KEYFRAMES ── */}
-      <style>{`
-        @keyframes scanLine {
-          0%   { left: -100%; top: 48%; opacity: 1; }
-          100% { left: 100%;  top: 48%; opacity: 0; }
-        }
-        @keyframes clipReveal {
-          0%   { clip-path: inset(0 100% 0 0); opacity: 1; }
-          100% { clip-path: inset(0 0% 0 0);   opacity: 1; }
-        }
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50%       { opacity: 0; }
-        }
-      `}</style>
-    </>
-  );
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 20,
+        }}
+        animate={{
+          opacity:
+            phase === "text" || phase === "exit"
+              ? 1
+              : 0,
+          y:
+            phase === "text" || phase === "exit"
+              ? 0
+              : 20,
+        }}
+        transition={{
+          delay: 0.4,
+          duration: 1,
+        }}
+        style={{
+          marginTop: "10px",
+          color: "rgba(255,255,255,.65)",
+          fontSize: "12px",
+          letterSpacing: "0.55em",
+          textTransform: "uppercase",
+          fontWeight: 300,
+        }}
+      >
+        TECH & GEO SOLUTIONS
+      </motion.div>
+
+      {/* THIN LINE */}
+
+      <motion.div
+        initial={{
+          scaleX: 0,
+        }}
+        animate={{
+          scaleX:
+            phase === "text" || phase === "exit"
+              ? 1
+              : 0,
+        }}
+        transition={{
+          delay: 0.2,
+          duration: 1,
+        }}
+        style={{
+          width: "260px",
+          height: "1px",
+          marginTop: "18px",
+          background:
+            "linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent)",
+          transformOrigin: "center",
+        }}
+      />
+    </div>
+  </motion.div>
+</AnimatePresence>
+
+
+);
 }
