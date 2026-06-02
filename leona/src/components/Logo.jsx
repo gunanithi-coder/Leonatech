@@ -1,4 +1,4 @@
-export default function Logo({ size = 52 }) {
+export default function Logo({ size = 50 }) {
   return (
     <div style={{ 
       display: 'flex', 
@@ -15,7 +15,7 @@ export default function Logo({ size = 52 }) {
       <img
         src="/leona-text.png"
         alt="Leona Tech & Geo Solutions Private Limited"
-        height={size * 0.9}
+        height={size * 0.7}
         width="auto"
         style={{ objectFit: 'contain' }}
       />
